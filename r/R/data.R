@@ -11,15 +11,16 @@
 #' @export
 load_synthetic_data <- function(path = NULL) {
   if (is.null(path)) {
-    # Find the data dir relative to this source file
-    here <- tryCatch(
-      dirname(sys.frame(1)$ofile),
-      error = function(e) getwd()
-    )
+    # Try several candidate paths relative to common working directories.
+    # testthat runs tests from the project root or the testthat/ directory
+    # depending on how it's invoked, and `sys.frame(1)$ofile` is unreliable
+    # under testthat (it can be NULL), so we search rather than relying on
+    # source-file introspection.
     candidates <- c(
-      file.path(here, "..", "data", "synthetic_choices.csv"),
-      file.path(getwd(), "data", "synthetic_choices.csv"),
-      file.path(getwd(), "r", "data", "synthetic_choices.csv")
+      file.path(getwd(), "data", "synthetic_choices.csv"),                  # from r/
+      file.path(getwd(), "..", "..", "data", "synthetic_choices.csv"),       # from r/tests/testthat/
+      file.path(getwd(), "..", "data", "synthetic_choices.csv"),             # from r/tests/
+      file.path(getwd(), "r", "data", "synthetic_choices.csv")               # from project root
     )
     for (c in candidates) {
       if (file.exists(c)) {
@@ -31,7 +32,7 @@ load_synthetic_data <- function(path = NULL) {
       stop(
         "Could not locate synthetic_choices.csv. Generate it from the ",
         "Python side with `python -m mixedlogit.export_csv`, or pass an ",
-        "explicit `path` argument."
+        "explicit `path` argument. Searched from: ", getwd()
       )
     }
   }
@@ -51,13 +52,10 @@ load_synthetic_data <- function(path = NULL) {
 #' @export
 load_ground_truth <- function(path = NULL) {
   if (is.null(path)) {
-    here <- tryCatch(
-      dirname(sys.frame(1)$ofile),
-      error = function(e) getwd()
-    )
     candidates <- c(
-      file.path(here, "..", "data", "ground_truth.json"),
       file.path(getwd(), "data", "ground_truth.json"),
+      file.path(getwd(), "..", "..", "data", "ground_truth.json"),
+      file.path(getwd(), "..", "data", "ground_truth.json"),
       file.path(getwd(), "r", "data", "ground_truth.json")
     )
     for (c in candidates) {

@@ -12,6 +12,21 @@
 #   - For MXL, simulation noise from the Halton draws matters; we allow
 #     wider tolerance on the SDs (10%).
 
+# Helper to find the Python results JSON regardless of working directory.
+find_python_results <- function(filename) {
+  candidates <- c(
+    file.path(getwd(), "data", filename),
+    file.path(getwd(), "..", "..", "data", filename),
+    file.path(getwd(), "..", "data", filename),
+    file.path(getwd(), "r", "data", filename)
+  )
+  for (c in candidates) {
+    if (file.exists(c)) return(normalizePath(c))
+  }
+  NULL
+}
+
+
 test_that("MNL coefficients match Python within 5%", {
   skip_if_not_installed("mlogit")
   skip_if_not_installed("dfidx")
@@ -20,12 +35,8 @@ test_that("MNL coefficients match Python within 5%", {
   r_mnl <- fit_mnl_r(df)
   expect_true(r_mnl$converged)
 
-  here <- tryCatch(dirname(sys.frame(1)$ofile), error = function(e) getwd())
-  py_path <- file.path(here, "..", "..", "data", "python_mnl_results.json")
-  if (!file.exists(py_path)) {
-    py_path <- file.path(getwd(), "r", "data", "python_mnl_results.json")
-  }
-  skip_if_not(file.exists(py_path), "Python MNL results JSON not generated")
+  py_path <- find_python_results("python_mnl_results.json")
+  skip_if(is.null(py_path), "Python MNL results JSON not found")
 
   cmp <- compare_with_python(r_mnl, py_path)
   expect_true(all(abs(cmp$gap_pct) < 5),
@@ -41,12 +52,8 @@ test_that("MXL means match Python within 5%, SDs within 10%", {
   r_mxl <- fit_mxl_r(df, n_draws = 200)
   expect_true(r_mxl$converged)
 
-  here <- tryCatch(dirname(sys.frame(1)$ofile), error = function(e) getwd())
-  py_path <- file.path(here, "..", "..", "data", "python_mxl_results.json")
-  if (!file.exists(py_path)) {
-    py_path <- file.path(getwd(), "r", "data", "python_mxl_results.json")
-  }
-  skip_if_not(file.exists(py_path), "Python MXL results JSON not generated")
+  py_path <- find_python_results("python_mxl_results.json")
+  skip_if(is.null(py_path), "Python MXL results JSON not found")
 
   cmp <- compare_with_python(r_mxl, py_path)
 
