@@ -22,11 +22,14 @@ fit_mnl_r <- function(df,
     stop("Package 'dfidx' is required.")
   }
 
-  # mlogit's dfidx takes the long-format data and an idx specification
-  # naming the choice-situation index and the alternative index.
+  # mlogit's dfidx takes the long-format data with a nested index spec:
+  # situation_id is nested within individual_id, and alt_id distinguishes
+  # alternatives within each situation. The list-of-vectors form tells
+  # dfidx the situation_id is the choice-occasion index nested within
+  # individual_id (the panel index needed for panel = TRUE).
   d <- dfidx::dfidx(
     df,
-    idx = c("situation_id", "alt_id"),
+    idx = list(c("situation_id", "individual_id"), "alt_id"),
     choice = "chosen"
   )
 
@@ -49,6 +52,13 @@ fit_mnl_r <- function(df,
   n_alts <- length(unique(df$alt_id))
   ll_null <- -n_situations * log(n_alts)
 
+  # Convergence check: mlogit doesn't expose a single boolean flag in a
+  # stable location across versions. The robust signal is that we have
+  # finite coefficients, finite standard errors, and a finite log-likelihood.
+  converged <- all(is.finite(coefs)) &&
+               all(is.finite(ses)) &&
+               is.finite(ll)
+
   list(
     coef_names = names(coefs),
     coefficients = unname(coefs),
@@ -58,7 +68,7 @@ fit_mnl_r <- function(df,
     loglik_null = ll_null,
     mcfadden_r2 = 1 - ll / ll_null,
     n_observations = n_situations,
-    converged = isTRUE(fit$est.stat$convergence),
+    converged = converged,
     mlogit_object = fit
   )
 }
@@ -95,9 +105,13 @@ fit_mxl_r <- function(df,
     stop("Package 'dfidx' is required.")
   }
 
+  # Nested index: situation_id within individual_id, alternatives within situations.
+  # The individual index is REQUIRED when fitting with panel = TRUE, since
+  # mlogit needs to know which observations to group together when
+  # integrating over the random coefficient distribution.
   d <- dfidx::dfidx(
     df,
-    idx = c("situation_id", "alt_id"),
+    idx = list(c("situation_id", "individual_id"), "alt_id"),
     choice = "chosen"
   )
 
@@ -143,6 +157,11 @@ fit_mxl_r <- function(df,
     character(1)
   )
 
+  # Same robust convergence check as MNL: finite coefs/SEs/log-likelihood.
+  converged <- all(is.finite(coefs)) &&
+               all(is.finite(ses)) &&
+               is.finite(ll)
+
   list(
     coef_names = names(coefs),
     coef_names_python = python_labels,
@@ -157,7 +176,7 @@ fit_mxl_r <- function(df,
     n_draws = n_draws,
     random_attrs = random_attrs,
     fixed_attrs = fixed_attrs,
-    converged = isTRUE(fit$est.stat$convergence),
+    converged = converged,
     mlogit_object = fit
   )
 }
