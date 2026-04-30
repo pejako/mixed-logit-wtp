@@ -1,0 +1,28 @@
+{
+  "n_individuals": 500,
+  "n_situations_per_individual": 8,
+  "n_alternatives": 3,
+  "include_outside_option": false,
+  "seed": 42,
+  "attributes": [
+    {
+      "name": "price",
+      "dist": "normal",
+      "mean": -1.2,
+      "sd": 0.4
+    },
+    {
+      "name": "quality",
+      "dist": "normal",
+      "mean": 0.8,
+      "sd": 0.5
+    },
+    {
+      "name": "brand_known",
+      "dist": "fixed",
+      "mean": 0.6,
+      "sd": 0.0
+    }
+  ],
+  "export_seed": 42
+}

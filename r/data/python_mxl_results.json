@@ -1,0 +1,23 @@
+{
+  "model": "MXL",
+  "loglik": -3563.6612210572193,
+  "loglik_null": -4394.449154672439,
+  "mcfadden_r2": 0.18905394154620647,
+  "n_observations": 4000,
+  "n_individuals": 500,
+  "n_draws": 200,
+  "coefficients": {
+    "price [mean]": -1.1984724483074018,
+    "price [sd]": 0.44418775581670583,
+    "quality [mean]": 0.796631161368275,
+    "quality [sd]": 0.5062179229171279,
+    "brand_known": 0.6362003212920737
+  },
+  "std_errors": {
+    "price [mean]": 0.05199011602891449,
+    "price [sd]": 0.09034729645880973,
+    "quality [mean]": 0.03978443240243383,
+    "quality [sd]": 0.04894983126698465,
+    "brand_known": 0.0460837119004758
+  }
+}

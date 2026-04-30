@@ -1,0 +1,67 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mixedlogit"
+version = "0.1.0"
+description = "Mixed Logit choice modeling on synthetic data with parameter-recovery tests"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Peterson" }]
+keywords = ["discrete choice", "mixed logit", "MXL", "elasticity", "WTP", "pricing"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering",
+]
+dependencies = [
+    "numpy>=1.24",
+    "scipy>=1.11",
+    "pandas>=2.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4",
+    "pytest-cov>=4.1",
+    "ruff>=0.4",
+    "jupyter>=1.0",
+    "matplotlib>=3.7",
+    "xlogit>=0.2.7",
+]
+
+[project.urls]
+Repository = "https://github.com/yourusername/mixed-logit-choice-lab"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["mixedlogit*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = "-v --tb=short"
+markers = [
+    "slow: marks tests that take >5s (deselect with '-m \"not slow\"')",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "B", "SIM"]
+# Math-notation variables (X, V, P, H, E, LL, ...) are conventional in
+# econometric code and improve readability when names track the underlying
+# math. Disable the lowercase-naming rules in source and tests.
+ignore = ["N803", "N806"]
+
+[tool.ruff.lint.per-file-ignores]
+# Tests use a few uppercase locals tracking math notation in the modules
+# they exercise; same rationale as above.
+"tests/*.py" = ["N803", "N806"]

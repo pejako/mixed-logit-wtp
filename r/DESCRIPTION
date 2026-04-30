@@ -1,0 +1,26 @@
+Package: mixedlogitr
+Type: Package
+Title: R Parity Layer for the Mixed Logit Choice Lab
+Version: 0.1.0
+Authors@R: person("Peterson", role = c("aut", "cre"),
+                  email = "noreply@example.com")
+Description: Companion R implementation that reads the Python project's
+    canonical synthetic dataset, fits MNL and MXL with mlogit, and produces
+    the same elasticity and WTP outputs. The point is cross-language
+    reproducibility: estimates from this package should match the Python
+    estimates to within numerical and SML simulation tolerance.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Depends: R (>= 4.1)
+Imports:
+    mlogit (>= 1.1),
+    dfidx,
+    jsonlite,
+    stats
+Suggests:
+    testthat (>= 3.0),
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
+Config/testthat/edition: 3
+RoxygenNote: 7.3.1
