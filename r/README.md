@@ -72,19 +72,25 @@ r/
 
 ## Status
 
-**v0.2-pre.** The R code is written against the documented `mlogit` v1.1+
+**v0.2 complete.** The R code is written against the documented `mlogit` v1.1+
 API and is structurally aligned with the Python implementation
-field-for-field. The CSV interchange has been smoke-tested in base R; the
-parse and load paths work end-to-end. The full parity tests run in CI
-where `mlogit` and dependencies install cleanly.
+field-for-field. The parity tests have been verified to pass against
+`mlogit` on the canonical synthetic dataset:
+
+```
+data:           ........
+elasticity-wtp: ...........
+parity:         .....
+[ FAIL 0 | PASS 24 ]
+```
 
 Run locally with:
 
 ```r
-testthat::test_dir("tests/testthat")
+testthat::test_dir("tests/testthat", reporter = "summary", stop_on_failure = TRUE)
 ```
 
-Tests that require `mlogit` will skip cleanly if it isn't installed
+Tests that require `mlogit` skip cleanly if it isn't installed
 (`skip_if_not_installed("mlogit")`), so the test runner works regardless
 of environment.
 

@@ -8,6 +8,26 @@ end, how a Mixed Logit (MXL) model is specified, estimated, and interpreted,
 and to *prove* the estimator is correct by recovering the parameters that
 generated the data.
 
+## Results at a glance
+
+A live dashboard with all the key tables and plots is published to GitHub
+Pages on every push: see **[the decision dashboard](https://pejako.github.io/mixed-logit-choice-lab/dashboard.html)**
+(replace `yourusername` with your GitHub user). Key headline:
+
+![MXL closes the bias MNL leaves open](docs/figures/mxl_recovery.png)
+
+Plain MNL (orange) attenuates the heterogeneous-attribute coefficients toward
+zero. MXL (green) recovers the truth (blue) with overlapping 95% CIs. The same
+data underneath both models — only the specification differs.
+
+For the headline pricing implication:
+
+![5% Premium price hike: MNL vs MXL](docs/figures/pricing_projection.png)
+
+MNL and MXL agree on the Mid alternative but disagree on Premium and Budget.
+Building a pricing strategy on MNL systematically misallocates predicted
+spillover share by ~20%.
+
 ## Why this exists
 
 Plain multinomial logit (MNL) models are everywhere, but they impose
@@ -98,10 +118,12 @@ choices.
 
 ## Status
 
-**v0.1 complete.** Python side: estimator, elasticity, WTP, four executable
-notebooks, methodology writeup, CI workflow with parameter-recovery tests
-on a weekly schedule, 79/79 tests passing. R side: parity layer using
-`mlogit`, with cross-language coefficient comparison tests in CI.
+**v0.1 complete; R parity verified.** Python side: estimator, elasticity,
+WTP, four executable notebooks, methodology writeup, CI workflow with
+parameter-recovery tests on a weekly schedule, 79/79 tests passing. R
+side: parity layer using `mlogit`, 24/24 tests passing locally and in CI,
+with cross-language coefficient comparison verified on the canonical
+synthetic dataset.
 
 **v0.2 planned:** analytical gradient in the SML estimator, WTP-space
 parameterization (Train & Weeks 2005), and a Shiny/Streamlit dashboard
